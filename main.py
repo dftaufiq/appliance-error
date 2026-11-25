@@ -49,6 +49,14 @@ def main() -> None:
         # No trailing newline: the file is exactly the 154-byte line, so the
         # Size tie-break counts the line itself and nothing else.
         f.write(LINE)
+    # Read back what was written and confirm it is exactly the validated
+    # line: a truncated or altered write must fail loudly here, never ship.
+    with open(path, "r", encoding="utf-8", newline="") as f:
+        written = f.read()
+    if written != LINE:
+        print("ERROR: entry.txt does not match the validated line",
+              file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
